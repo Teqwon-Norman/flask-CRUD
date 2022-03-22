@@ -51,7 +51,8 @@ def create_users():
         )
 
     except Exception as ex:
-        print(ex) 
+        print(ex)
+
 #############################
 @app.route('/users/<id>', methods=['PATCH'])
 def update_user(id):
@@ -84,8 +85,37 @@ def update_user(id):
             status=500,
             mimetype="application/json"
         )
-
 #############################
+
+@app.route('/users/<id>', methods=['DELETE'])
+def delete_user(id):
+    try:
+        dbResponse = db.users.delete_one({'_id': ObjectId(id)})
+        if dbResponse.deleted_count == 1:
+            return Response(
+                response= json.dumps({'message': 'user deleted', 'id': f'{id}'}),
+                status=200,
+                mimetype="application/json"
+            )
+
+
+        return Response(
+            response= json.dumps({'message': 'user not found', 'id': f'{id}'}),
+            status=200,
+            mimetype="application/json"
+        )
+
+    except Exception as ex:
+        print('**************')
+        print(ex)
+        print('**************')
+        return Response(
+            response= json.dumps({'message': 'could not delete'}),
+            status=500,
+            mimetype="application/json"
+        )
+#############################
+
 
 
 if __name__ == '__main__':
